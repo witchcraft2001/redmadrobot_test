@@ -2,21 +2,24 @@ package com.dmdev.bootcamptest.data.models;
 
 import com.dmdev.bootcamptest.listeners.UserListener;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.dmdev.bootcamptest.data.constants.SecurityConstants.AUTHORITIES;
 
 @Data
 @Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USERS")
@@ -62,7 +65,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
 
     @Override

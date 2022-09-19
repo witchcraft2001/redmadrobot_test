@@ -1,22 +1,22 @@
 package com.dmdev.bootcamptest.util;
 
-import com.sun.security.auth.UserPrincipal;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.dmdev.bootcamptest.data.constants.SecurityConstants.*;
+import static com.dmdev.bootcamptest.data.constants.SecurityConstants.AUTHORITIES;
+import static com.dmdev.bootcamptest.data.constants.SecurityConstants.TOKEN_PREFIX;
 
 @Component
 public class JwtTokenProvider {
@@ -50,8 +50,22 @@ public class JwtTokenProvider {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public UsernamePasswordAuthenticationToken getAuthentication(String authToken, Authentication authentication, UserDetails userDetails) {
-        return null;
+    public UsernamePasswordAuthenticationToken getAuthentication(
+            String authToken,
+            Authentication authentication,
+            UserDetails userDetails) {
+        final JwtParser jwtParser = Jwts.parser().setSigningKey(secret);
+
+        final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(authToken);
+
+        final Claims claims = claimsJws.getBody();
+
+        final Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get(AUTHORITIES).toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
     public Date getExpirationDateFromToken(String token) {

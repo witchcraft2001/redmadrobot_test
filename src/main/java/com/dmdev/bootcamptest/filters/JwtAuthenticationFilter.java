@@ -4,10 +4,12 @@ import com.dmdev.bootcamptest.util.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNullApi;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -51,17 +53,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            try {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication =
-                        jwtTokenUtil.getAuthentication(
-                                authToken,
-                                SecurityContextHolder.getContext().getAuthentication(),
-                                userDetails);
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-                logger.info("authenticated user " + username + ", setting security context");
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            jwtTokenUtil.getAuthentication(
+                                    authToken,
+                                    SecurityContextHolder.getContext().getAuthentication(),
+                                    userDetails);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+                    logger.info("authenticated user " + username + ", setting security context");
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (UsernameNotFoundException e) {
+                logger.error(e.getMessage());
             }
         }
 
