@@ -27,11 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/register", "/users/login").permitAll()
-                .anyRequest().authenticated()
-                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/users/register", "/api/users/login").permitAll()
+                .antMatchers("/swagger-ui/**", "/swagger-resources/**", "/webjars/**", "/v2/api-docs").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }

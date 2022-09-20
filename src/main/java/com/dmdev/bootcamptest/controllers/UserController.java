@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
     private final AuthenticationManager authenticationManager;
@@ -47,7 +47,6 @@ public class UserController {
         return ResponseEntity.ok(UserDto.getUserDtoFromModel(user));
     }
 
-//    @PreAuthorize(value = "")
     @GetMapping(value = "/me")
     public ResponseEntity<?> getMe(HttpServletRequest request) throws Exception {
         Optional<User> result = userService.findByEmail(request.getUserPrincipal().getName());
