@@ -39,6 +39,7 @@ public class Bulletin {
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private User author;
 
+    // For moderation
     @Column
     private boolean isActive;
 

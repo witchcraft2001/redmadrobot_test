@@ -8,8 +8,11 @@ import java.util.Optional;
 
 public interface BulletinService {
     Optional<Bulletin> findById(long id);
-    List<Bulletin> findAll(boolean isAdmin);
+    List<Bulletin> findAll();
+    List<Bulletin> findMy(String email);
+    List<Bulletin> getPublished();
     Bulletin save(BulletinDto bulletin, String email);
     void deleteById(long id);
-    Optional<Bulletin> publishById(long id);
+    Bulletin updateActiveBulletin(long id, boolean isActive);
+    Bulletin updatePublishedBulletin(long id, String email, boolean isPublished);
 }

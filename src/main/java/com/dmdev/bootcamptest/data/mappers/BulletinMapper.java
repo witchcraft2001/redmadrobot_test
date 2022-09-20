@@ -14,7 +14,7 @@ public class BulletinMapper {
                 .contacts(dto.getContacts())
                 .description(dto.getDescription())
                 .title(dto.getTitle())
-                .isActive(dto.isActive())
+                .isPublished(dto.isPublished())
                 .build();
     }
 
