@@ -5,11 +5,13 @@ jwt:
   secret: 'VzKOIWzxkoinU1RzrgGty2oMAfOWcLPOg4VOAXau0zdT1hMFjB'
   expiration_time: 4320000000
 
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/board-db
     username: root
     password: rootpwd
+
   jpa:
     generate-ddl: true
     hibernate:

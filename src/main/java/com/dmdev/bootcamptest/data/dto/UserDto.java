@@ -3,6 +3,7 @@ package com.dmdev.bootcamptest.data.dto;
 import com.dmdev.bootcamptest.data.models.Role;
 import com.dmdev.bootcamptest.data.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     private String email;
     private String password;
