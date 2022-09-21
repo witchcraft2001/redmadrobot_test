@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -78,7 +79,7 @@ public class MessageServiceImpl implements MessageService {
         }
 
         Message message = optionalMessage.get();
-        if (!message.getSender().getEmail().equalsIgnoreCase(email) &&
+        if (!Objects.equals(message.getSender().getId(), userOptional.get().getId()) &&
                 userOptional.get().getRoles().stream().noneMatch(role -> role.getName().equalsIgnoreCase(ADMIN_ROLE_NAME))) {
                     throw new AccessDeniedException("You can't delete this message");
         }

@@ -67,7 +67,7 @@ class MessageServiceImplTest {
                 .build();
 
         bul2 = Bulletin.builder()
-                .id(1L)
+                .id(2L)
                 .author(user2)
                 .build();
 
@@ -82,10 +82,6 @@ class MessageServiceImplTest {
         Mockito.when(userService.findByEmail(user1.getEmail())).thenReturn(Optional.ofNullable(user1));
         Mockito.when(userService.findByEmail(user2.getEmail())).thenReturn(Optional.ofNullable(user2));
         service = new MessageServiceImpl(repository, bulletinService, userService);
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
