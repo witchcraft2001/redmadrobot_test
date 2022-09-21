@@ -8,7 +8,7 @@ jwt:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/board-db
+    url: jdbc:h2:mem:board-db
     username: root
     password: rootpwd
 
