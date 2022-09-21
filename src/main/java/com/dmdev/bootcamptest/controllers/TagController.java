@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class TagController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<?> add(@RequestBody TagDto tagDto) {
+    public ResponseEntity<?> add(@Valid @RequestBody TagDto tagDto) {
         Tag tag = service.save(mapper.toModel(tagDto));
         return ResponseEntity.ok(new ApiResponse<>(Status.OK, HttpStatus.CREATED.value(), null, mapper.toDto(tag)));
     }

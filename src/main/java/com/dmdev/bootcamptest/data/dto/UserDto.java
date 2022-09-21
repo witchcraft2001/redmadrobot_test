@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 
 @Data
@@ -16,7 +19,10 @@ import java.util.Arrays;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
     private Long id;
+    @Email(message = "Incorrect E-mail address")
     private String email;
+    @Size(min = 6, max = 10, message = "Minimum password size 6, maximum 10")
+    @NotBlank(message = "Password can't be empty")
     private String password;
     private boolean isActive;
     private String[] roles;

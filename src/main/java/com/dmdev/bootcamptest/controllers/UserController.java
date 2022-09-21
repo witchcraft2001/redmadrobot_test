@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -30,7 +31,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody LoginUserDto loginUser) throws AuthenticationException {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginUserDto loginUser) throws AuthenticationException {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginUser.getEmail(),
@@ -44,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<?> register(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> register(@Valid @RequestBody UserDto userDto) {
         User user = userService.save(userDto);
         user.setPassword(null);
         return ResponseEntity.ok(new ApiResponse<>(Status.OK, 200, null, UserDto.getUserDtoFromModel(user)));

@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +30,7 @@ public class BulletinController {
 
     @PostMapping
     @ApiOperation(value = "Add a new bulletin")
-    public ResponseEntity<?> add(@RequestBody BulletinDto dto, HttpServletRequest request) {
+    public ResponseEntity<?> add(@Valid @RequestBody BulletinDto dto, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         Bulletin model = service.save(dto, principal.getName());
         return ResponseEntity.ok(new ApiResponse<>(Status.OK, HttpStatus.CREATED.value(), null, mapper.toDto(model)));

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class MessageController {
 
     @PostMapping("/api/bulletins/{id}/messages")
     @ApiOperation(value = "Add message to bulletin conversation")
-    public ResponseEntity<?> list(@PathVariable(name = "id") long id, @RequestBody AddMessageDto dto, HttpServletRequest request) {
+    public ResponseEntity<?> add(@PathVariable(name = "id") long id, @Valid @RequestBody AddMessageDto dto, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         Message message = service.addMessageToBulletin(id, dto.getRecipientId(), principal.getName(), dto.getBody());
 
@@ -44,7 +45,7 @@ public class MessageController {
 
     @DeleteMapping("/api/bulletins/{id}/messages/{message_id}")
     @ApiOperation(value = "Delete message from bulletin conversation")
-    public ResponseEntity<?> list(@PathVariable(name = "id") long id, @PathVariable(name = "message_id") long messageId, HttpServletRequest request) {
+    public ResponseEntity<?> delete(@PathVariable(name = "id") long id, @PathVariable(name = "message_id") long messageId, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
 
         service.deleteById(messageId, principal.getName());

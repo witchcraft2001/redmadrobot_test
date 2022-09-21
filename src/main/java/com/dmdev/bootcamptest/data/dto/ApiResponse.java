@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Map;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -13,10 +15,10 @@ import lombok.Data;
 public class ApiResponse<T> {
     private Status status;
     private int code;
-    private String message;
+    private Map<String, String> message;
     private T result;
 
     public static ApiResponse<String> getErrorResponse(int code, String message) {
-        return new ApiResponse<>(Status.ERROR, code, message, null);
+        return new ApiResponse<>(Status.ERROR, code, Map.of("error", message), null);
     }
 }
