@@ -9,6 +9,7 @@ import com.dmdev.bootcamptest.services.BulletinService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,9 +39,8 @@ public class BulletinController {
 
     @GetMapping
     @ApiOperation(value = "Gets a list of bulletins")
-    public ResponseEntity<?> list(HttpServletRequest request) {
-        Principal principal = request.getUserPrincipal();
-        List<BulletinDto> items = service.getPublished().stream().map(mapper::toDto).collect(Collectors.toList());
+    public ResponseEntity<?> list(@RequestParam(value = "tag") List<String> tags, HttpServletRequest request) {
+        List<BulletinDto> items = service.getPublished(tags).stream().map(mapper::toDto).collect(Collectors.toList());
         return ResponseEntity.ok(new ApiResponse<>(Status.OK, HttpStatus.CREATED.value(), null, items));
     }
 

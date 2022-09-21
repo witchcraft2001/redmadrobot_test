@@ -50,10 +50,13 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     @Override
-    public List<Bulletin> getPublished() {
+    public List<Bulletin> getPublished(List<String> tags) {
         List<Bulletin> list = new ArrayList<>();
         repository.findAll().iterator().forEachRemaining(item -> {
-            if (item.isActive() && item.isPublished()) list.add(item);
+            if (item.isActive() &&
+                    item.isPublished() &&
+                    (tags == null || item.getTags().stream().anyMatch(tag -> tags.stream().anyMatch(t -> t.equalsIgnoreCase(tag.getName())))))
+                list.add(item);
         });
         return list;
     }
