@@ -60,6 +60,11 @@ public class UserServiceImpl implements UserService {
         return repository.findByEmail(email);
     }
 
+    @Override
+    public Optional<User> findById(long id) {
+        return repository.findById(id);
+    }
+
     private boolean emailExists(String email) {
         return repository.findByEmail(email).isPresent();
     }

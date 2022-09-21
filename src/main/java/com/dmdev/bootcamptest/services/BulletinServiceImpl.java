@@ -25,7 +25,7 @@ public class BulletinServiceImpl implements BulletinService {
 
     @Override
     public Optional<Bulletin> findById(long id) {
-        return Optional.empty();
+        return repository.findById(id);
     }
 
     @Override

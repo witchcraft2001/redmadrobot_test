@@ -15,6 +15,7 @@ import java.util.Arrays;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
+    private Long id;
     private String email;
     private String password;
     private boolean isActive;
@@ -23,6 +24,7 @@ public class UserDto {
     @JsonIgnore
     public static UserDto getUserDtoFromModel(User model) {
         return new UserDto(
+                model.getId(),
                 model.getEmail(),
                 model.getPassword(),
                 model.isActive(),

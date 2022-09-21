@@ -1,6 +1,7 @@
 package com.dmdev.bootcamptest.data.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Data
 @Entity
 @NoArgsConstructor
+@Builder
 @AllArgsConstructor
 @Table(name = "MESSAGES")
 public class Message {

@@ -5,7 +5,6 @@ import com.dmdev.bootcamptest.data.dto.ApiResponse;
 import com.dmdev.bootcamptest.data.dto.BulletinDto;
 import com.dmdev.bootcamptest.data.mappers.BulletinMapper;
 import com.dmdev.bootcamptest.data.models.Bulletin;
-import com.dmdev.bootcamptest.repositories.UserRepository;
 import com.dmdev.bootcamptest.services.BulletinService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
