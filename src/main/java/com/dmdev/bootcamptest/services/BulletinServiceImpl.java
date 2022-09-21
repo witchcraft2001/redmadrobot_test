@@ -131,10 +131,4 @@ public class BulletinServiceImpl implements BulletinService {
         }
         throw new BulletinNotFoundException("A bulletin with ID=" + id + " doesn't found");
     }
-
-    private boolean isAdmin(String email) {
-        Optional<User> optional = userRepository.findByEmail(email);
-        return optional.isPresent() &&
-                optional.get().getRoles().stream().anyMatch(role -> role.getName().equalsIgnoreCase("ADMIN"));
-    }
 }

@@ -12,10 +12,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.*;
 
+import static com.dmdev.bootcamptest.data.constants.SecurityConstants.USER_ROLE_NAME;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final String USER_ROLE = "USER";
     private final RoleService roleService;
     private final UserRepository repository;
     private final UserMapper userMapper;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
                 );
             }
             if (roles.isEmpty()) {
-                Optional<Role> role = roleService.findByName(USER_ROLE);
+                Optional<Role> role = roleService.findByName(USER_ROLE_NAME);
                 role.ifPresent(roles::add);
             }
 

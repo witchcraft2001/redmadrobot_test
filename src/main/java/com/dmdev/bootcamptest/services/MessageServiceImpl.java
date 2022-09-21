@@ -4,9 +4,11 @@ import com.dmdev.bootcamptest.data.models.Bulletin;
 import com.dmdev.bootcamptest.data.models.Message;
 import com.dmdev.bootcamptest.data.models.User;
 import com.dmdev.bootcamptest.exceptions.BulletinNotFoundException;
+import com.dmdev.bootcamptest.exceptions.MessageNotFoundException;
 import com.dmdev.bootcamptest.exceptions.UnknownUserException;
 import com.dmdev.bootcamptest.repositories.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -14,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.dmdev.bootcamptest.data.constants.SecurityConstants.ADMIN_ROLE_NAME;
 
 @Service
 @RequiredArgsConstructor
@@ -61,9 +65,23 @@ public class MessageServiceImpl implements MessageService {
         return message;
     }
 
-    // TODO: Add check for message owner
     @Override
-    public void deleteById(long id) {
+    public void deleteById(long id, String email) {
+        Optional<Message> optionalMessage = repository.findById(id);
+        if (optionalMessage.isEmpty()) {
+            throw new MessageNotFoundException("A message with ID=" + id + " doesn't found");
+        }
+
+        Optional<User> userOptional = userService.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new UnknownUserException("Unknown user");
+        }
+
+        Message message = optionalMessage.get();
+        if (!message.getSender().getEmail().equalsIgnoreCase(email) ||
+                userOptional.get().getRoles().stream().noneMatch(role -> role.getName().equalsIgnoreCase(ADMIN_ROLE_NAME))) {
+            throw new AccessDeniedException("You can't delete this message");
+        }
         repository.deleteById(id);
     }
 }

@@ -45,10 +45,9 @@ public class MessageController {
     @DeleteMapping("/api/bulletins/{id}/messages/{message_id}")
     @ApiOperation(value = "Delete message from bulletin conversation")
     public ResponseEntity<?> list(@PathVariable(name = "id") long id, @PathVariable(name = "message_id") long messageId, HttpServletRequest request) {
-//        Principal principal = request.getUserPrincipal();
-//        Message message = service.addMessageToBulletin(id, dto.getRecipientId(), principal.getName(), dto.getBody());
+        Principal principal = request.getUserPrincipal();
 
-        service.deleteById(messageId);
+        service.deleteById(messageId, principal.getName());
         return ResponseEntity.ok(new ApiResponse<>(Status.OK, HttpStatus.NO_CONTENT.value(), null, null));
     }
 }
