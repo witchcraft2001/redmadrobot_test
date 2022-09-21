@@ -78,9 +78,9 @@ public class MessageServiceImpl implements MessageService {
         }
 
         Message message = optionalMessage.get();
-        if (!message.getSender().getEmail().equalsIgnoreCase(email) ||
+        if (!message.getSender().getEmail().equalsIgnoreCase(email) &&
                 userOptional.get().getRoles().stream().noneMatch(role -> role.getName().equalsIgnoreCase(ADMIN_ROLE_NAME))) {
-            throw new AccessDeniedException("You can't delete this message");
+                    throw new AccessDeniedException("You can't delete this message");
         }
         repository.deleteById(id);
     }
