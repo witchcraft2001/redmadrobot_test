@@ -90,4 +90,12 @@ public class BulletinController {
         Bulletin model = service.updateActiveBulletin(id, false);
         return ResponseEntity.ok(new ApiResponse<>(Status.OK, HttpStatus.CREATED.value(), null, mapper.toDto(model)));
     }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<?> delete(@PathVariable(name = "id") long id, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        service.deleteById(id, principal.getName());
+        return ResponseEntity.ok(new ApiResponse<>(Status.OK, HttpStatus.NO_CONTENT.value(), null, null));
+    }
+
 }

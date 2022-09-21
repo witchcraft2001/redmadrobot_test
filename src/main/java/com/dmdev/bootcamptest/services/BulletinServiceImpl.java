@@ -2,17 +2,21 @@ package com.dmdev.bootcamptest.services;
 
 import com.dmdev.bootcamptest.data.dto.BulletinDto;
 import com.dmdev.bootcamptest.data.mappers.BulletinMapper;
-import com.dmdev.bootcamptest.data.models.*;
+import com.dmdev.bootcamptest.data.models.Bulletin;
+import com.dmdev.bootcamptest.data.models.Image;
+import com.dmdev.bootcamptest.data.models.Tag;
+import com.dmdev.bootcamptest.data.models.User;
 import com.dmdev.bootcamptest.exceptions.BulletinNotFoundException;
 import com.dmdev.bootcamptest.exceptions.UnknownUserException;
 import com.dmdev.bootcamptest.repositories.BulletinRepository;
-import com.dmdev.bootcamptest.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
+
+import static com.dmdev.bootcamptest.data.constants.SecurityConstants.ADMIN_ROLE_NAME;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +25,7 @@ public class BulletinServiceImpl implements BulletinService {
     private final TagService tagService;
     private final ImageService imageService;
     private final BulletinMapper mapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public Optional<Bulletin> findById(long id) {
@@ -30,11 +34,12 @@ public class BulletinServiceImpl implements BulletinService {
 
     @Override
     public List<Bulletin> findMy(String email) {
-        List<Bulletin> list = new ArrayList<>();
-        repository.findAll().iterator().forEachRemaining(item -> {
-            if (item.getAuthor().getEmail().equalsIgnoreCase(email)) list.add(item);
-        });
-        return list;
+        Optional<User> userOptional = userService.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new UnknownUserException("Unknown user");
+        }
+
+        return repository.findAllByAuthorId(userOptional.get().getId());
     }
 
     @Override
@@ -55,7 +60,7 @@ public class BulletinServiceImpl implements BulletinService {
 
     @Override
     public Bulletin save(BulletinDto dto, String email) {
-        Optional<User> optional = userRepository.findByEmail(email);
+        Optional<User> optional = userService.findByEmail(email);
         if (optional.isPresent()) {
             Bulletin model = mapper.toModel(dto);
             model.setAuthor(optional.get());
@@ -97,7 +102,22 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     @Override
-    public void deleteById(long id) {
+    public void deleteById(long id, String email) {
+        Optional<Bulletin> optional = repository.findById(id);
+        if (optional.isEmpty()) {
+            throw new BulletinNotFoundException("A bulletin with ID=" + id + " doesn't found");
+        }
+
+        Optional<User> userOptional = userService.findByEmail(email);
+        if (userOptional.isEmpty()) {
+            throw new UnknownUserException("Unknown user");
+        }
+
+        Bulletin bulletin = optional.get();
+        if (!Objects.equals(bulletin.getAuthor().getId(), userOptional.get().getId()) &&
+                userOptional.get().getRoles().stream().noneMatch(role -> role.getName().equalsIgnoreCase(ADMIN_ROLE_NAME))) {
+            throw new AccessDeniedException("You can't delete this bulletin");
+        }
         repository.deleteById(id);
     }
 
@@ -117,7 +137,7 @@ public class BulletinServiceImpl implements BulletinService {
     public Bulletin updatePublishedBulletin(long id, String email, boolean isPublished) {
         Optional<Bulletin> optional = repository.findById(id);
         if (optional.isPresent()) {
-            Optional<User> userOptional = userRepository.findByEmail(email);
+            Optional<User> userOptional = userService.findByEmail(email);
             if (userOptional.isEmpty()) {
                 throw new UnknownUserException("Unknown user");
             }

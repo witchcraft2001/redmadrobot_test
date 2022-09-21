@@ -12,7 +12,7 @@ public interface BulletinService {
     List<Bulletin> findMy(String email);
     List<Bulletin> getPublished();
     Bulletin save(BulletinDto bulletin, String email);
-    void deleteById(long id);
+    void deleteById(long id, String email);
     Bulletin updateActiveBulletin(long id, boolean isActive);
     Bulletin updatePublishedBulletin(long id, String email, boolean isPublished);
 }
